@@ -1,5 +1,5 @@
+from openai import OpenAI
 import mlflow
-import openai
 from dotenv import load_dotenv
 import os
 import psycopg2
@@ -22,7 +22,7 @@ def get_postgres_connection():
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
 
 api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = api_key
+client = OpenAI(api_key=api_key)
 
 target_text = """
 MLflow is an open source platform for managing the end-to-end machine learning lifecycle.
@@ -32,16 +32,15 @@ MLflow currently offers these functions as four components: MLflow Tracking,
 MLflow Projects, MLflow Models, and MLflow Registry.
 """
 
-# Create an inline prompt
-prompt_template = "Summarize the following text in {num_sentences} sentence(s):\n\n{sentences}"
+# Load the prompt from MLflow registry (version 1)
+prompt = mlflow.genai.load_prompt("prompts:/summarization-prompt/1")
 
-# Use the prompt with an LLM
-client = openai.OpenAI()
+# Use the prompt with OpenAI
 response = client.chat.completions.create(
     messages=[
         {
             "role": "user",
-            "content": prompt_template.format(num_sentences=1, sentences=target_text),
+            "content": prompt.format(num_sentences=1, sentences=target_text),
         }
     ],
     model="gpt-4o-mini",

@@ -123,6 +123,13 @@ If you get authentication errors:
 - Ensure PostgreSQL service is running
 - Check that the database `mlflow_db` exists
 
+### Sources
+https://mlflow.org/docs/3.4.0/ml/tracking/quickstart/notebooks/tracking_quickstart/
+
+https://mlflow.org/docs/3.4.0/ml/tracking/
+
+
+
 ## License
 
 MIT
