@@ -25,11 +25,13 @@ api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
 target_text = """
-MLflow is an open source platform for managing the end-to-end machine learning lifecycle.
-It tackles four primary functions in the ML lifecycle: Tracking experiments, packaging ML
-code for reuse, managing and deploying models, and providing a central model registry.
-MLflow currently offers these functions as four components: MLflow Tracking,
-MLflow Projects, MLflow Models, and MLflow Registry.
+Artificial Intelligence and Data Science are transforming industries by enabling machines to learn 
+from data and make intelligent decisions. Machine learning algorithms can identify patterns in vast 
+datasets, while deep learning neural networks excel at complex tasks like image recognition and 
+natural language processing. Data scientists use statistical methods, programming, and domain expertise 
+to extract insights from structured and unstructured data. Modern AI systems leverage techniques such 
+as supervised learning, unsupervised learning, and reinforcement learning to solve real-world problems 
+ranging from predictive analytics to autonomous systems.
 """
 
 # Load the prompt from MLflow registry (version 1)
