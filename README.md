@@ -96,7 +96,6 @@ conn = get_postgres_connection()
 - python-dotenv - Environment variable management
 - psycopg2-binary - PostgreSQL adapter
 
-## Troubleshooting
 
 ### MLflow UI 
 
@@ -112,6 +111,10 @@ If you encounter `OSError: [WinError 10022]` when starting MLflow UI, this is du
    ```bash
    mlflow ui --backend-store-uri postgresql://postgres:password@localhost:5432/mlflow_db --host 127.0.0.1
    ```
+
+## Creating prompt versions
+
+After `mlflow ui`, you go in the UI into Prompts -> Create Prompt. Then you create a second version of it, using the right-upper corner (Create version) in the given prompt.
 
 ### PostgreSQL Connection Issues
 
