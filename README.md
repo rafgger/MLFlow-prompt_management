@@ -4,6 +4,11 @@ A Python project that integrates MLflow with PostgreSQL backend for experiment t
 
 Experiment with 2 prompts.
 
+<a href="[https://www.youtube.com/watch?v=1UKnY7uTvOI](https://youtu.be/DkegCtqncd4)" target="_blank">
+  <img src="[https://github.com/user-attachments/assets/83f5c01c-4030-4c8a-ab0e-48c14f00c891](https://youtu.be/DkegCtqncd4)" alt="MLFlow example" width="500"/>
+</a>
+
+
 ## Features
 
 - MLflow tracking with PostgreSQL backend
