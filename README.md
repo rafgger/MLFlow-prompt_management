@@ -5,8 +5,10 @@ A Python project that integrates MLflow with PostgreSQL backend for experiment t
 Experiment with 2 prompts.
 
 <a href="https://youtu.be/DkegCtqncd4" target="_blank">
-  <img src="https://img.youtube.com/vi/DkegCtqncd4/maxresdefault.jpg" alt="MLFlow video example" width="500"/>
+  <img src="https://github.com/user-attachments/assets/bb3f1ec3-0442-432d-8321-02e7726e3a89" alt="MLFlow video example" width="500"/>
 </a>
+
+
 
 
 ## Features
