@@ -34,18 +34,46 @@ as supervised learning, unsupervised learning, and reinforcement learning to sol
 ranging from predictive analytics to autonomous systems.
 """
 
-# Load the prompt from MLflow registry (version 1)
-prompt = mlflow.genai.load_prompt("prompts:/summarization-prompt/1")
+# Load different versions of the prompt
+def test_prompt_version(version, num_sentences=1):
+    """Test a specific version of the summarization prompt"""
+    print(f"\n{'='*60}")
+    print(f"Testing Prompt Version {version}")
+    print(f"{'='*60}")
+    
+    try:
+        # Load the prompt from MLflow registry
+        prompt = mlflow.genai.load_prompt(f"prompts:/summarization-prompt/{version}")
+        print(f"✓ Loaded prompt version {version}")
+        print(f"Template: {prompt.template[:100]}...")
+        
+        # Use the prompt with OpenAI
+        response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt.format(num_sentences=num_sentences, sentences=target_text),
+                }
+            ],
+            model="gpt-4o-mini",
+        )
+        
+        result = response.choices[0].message.content
+        print(f"\nResult:\n{result}")
+        return result
+        
+    except Exception as e:
+        print(f"✗ Error loading version {version}: {e}")
+        return None
 
-# Use the prompt with OpenAI
-response = client.chat.completions.create(
-    messages=[
-        {
-            "role": "user",
-            "content": prompt.format(num_sentences=1, sentences=target_text),
-        }
-    ],
-    model="gpt-4o-mini",
-)
-
-print(response.choices[0].message.content)
+# Test different versions
+if __name__ == "__main__":
+    # You can change this to test different versions
+    PROMPT_VERSION = 3  # Change to 2, 3, etc. to test other versions
+    
+    # Or test multiple versions
+    test_prompt_version(PROMPT_VERSION)
+    
+    # Uncomment to compare multiple versions:
+    # for version in [1, 2]:
+    #     test_prompt_version(version)

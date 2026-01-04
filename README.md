@@ -61,20 +61,45 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 POSTGRES_DB=mlflow_db
 
-MLFLOW_TRACKING_URI=postgresql://postgres:your_password@localhost:5432/mlflow_db
+# MLflow Tracking URI - point to MLflow server (not directly to PostgreSQL)
+MLFLOW_TRACKING_URI=http://127.0.0.1:5000
 ```
 
 ## Usage
 
-Run the main script:
+### 1. Start the MLflow Tracking Server
+
+Run the MLflow server with PostgreSQL backend:
+```bash
+start_mlflow_server.bat
+```
+
+Or manually:
+```bash
+mlflow server --backend-store-uri postgresql://postgres:your_password@localhost:5432/mlflow_db --host 127.0.0.1 --port 5000
+```
+
+The server will:
+- Store **metadata** (runs, parameters, metrics) in PostgreSQL
+- Store **artifacts** (mo      # Main application script
+├── register_prompt.py         # Register prompts to MLflow
+├── sync_database.py           # Sync and verify database
+├── cleanup_model.py           # Clean up models
+├── start_mlflow_server.bat    # Start MLflow tracking server
+├── requirements.txt           # Python dependencies
+├── .env                       # Environment variables (not in git)
+├── .gitignore                 # Git ignore rules
+├── mlartifacts/               # Local artifact storage
+└── README.md       
+In a separate terminal:
 ```bash
 python main.py
 ```
 
 The script will:
-- Connect to PostgreSQL via MLflow
+- Connect to the MLflow tracking server
 - Use OpenAI's GPT-4o-mini to summarize text
-- Track experiments in the PostgreSQL database
+- Track experiments with metadata in PostgreSQL and artifacts locally
 
 ## Project Structure
 
@@ -99,20 +124,17 @@ conn = get_postgres_connection()
 ## Dependencies
 
 - mlflow - Experiment tracking and model registry
-- openai - OpenAI API client
-- python-dotenv - Environment variable management
-- psycopg2-binary - PostgreSQL adapter
+- openai - Tracking Server Architecture
 
+This project uses the MLflow Tracking Server architecture as described in the [official documentation](https://mlflow.org/docs/latest/self-hosting/architecture/tracking-server/):
 
-### MLflow UI 
+- **Backend Store**: PostgreSQL database stores all metadata (experiments, runs, parameters, metrics)
+- **Artifact Store**: Local filesystem (`./mlartifacts`) stores artifacts (models, files, plots)
+- **Tracking Server**: HTTP server that proxies requests between clients and storage
 
-`mlflow ui`
+To access the MLflow UI, simply navigate to http://127.0.0.1:5000 after starting the server.
 
-`mlflow server --host 127.0.0.1 --port 8080`
-
-If you encounter `OSError: [WinError 10022]` when starting MLflow UI, this is due to Python 3.13 compatibility issues with uvicorn on Windows.
-
-**Solutions:**
+**Note:** If you encounter `OSError: [WinError 10022]`, use Python 3.11 or 3.12 instead of 3.13 (known compatibility issue with uvicorn on Windows).tions:**
 1. Use Python 3.11 or 3.12 instead of 3.13
 2. Or run MLflow UI with the `--host` flag:
    ```bash
