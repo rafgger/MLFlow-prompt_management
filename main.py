@@ -21,6 +21,12 @@ def get_postgres_connection():
 # Configure MLflow to use PostgreSQL backend
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
 
+# Enable automatic tracing for OpenAI calls
+mlflow.openai.autolog()
+
+# Set experiment
+mlflow.set_experiment("summarization-tracing")
+
 api_key = os.getenv("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
 
@@ -66,14 +72,61 @@ def test_prompt_version(version, num_sentences=1):
         print(f"✗ Error loading version {version}: {e}")
         return None
 
+
+def test_prompt_version_with_trace(version, num_sentences=1):
+    """Test a specific version of the summarization prompt with MLflow Tracing"""
+    print(f"\n{'='*60}")
+    print(f"Testing Prompt Version {version} WITH AUTOMATIC TRACES")
+    print(f"{'='*60}")
+    
+    try:
+        # Load the prompt from MLflow registry
+        prompt = mlflow.genai.load_prompt(f"prompts:/summarization-prompt/{version}")
+        print(f"✓ Loaded prompt version {version}")
+        print(f"Template: {prompt.template[:100]}...")
+        
+        # Format and use the prompt with OpenAI
+        formatted_prompt = prompt.format(num_sentences=num_sentences, sentences=target_text)
+        
+        # OpenAI call is automatically traced by mlflow.openai.autolog()
+        response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": formatted_prompt,
+                }
+            ],
+            model="gpt-4o-mini",
+        )
+        
+        result = response.choices[0].message.content
+        print(f"\nResult:\n{result}")
+        print(f"\n✓ Trace logged automatically by mlflow.openai.autolog()!")
+        return result
+        
+    except Exception as e:
+        print(f"✗ Error: {e}")
+        return None
+
 # Test different versions
 if __name__ == "__main__":
     # You can change this to test different versions
-    PROMPT_VERSION = 3  # Change to 2, 3, etc. to test other versions
+    PROMPT_VERSION = 2  # Change to 2, 3, etc. to test other versions
     
-    # Or test multiple versions
-    test_prompt_version(PROMPT_VERSION)
+    print("\n" + "="*60)
+    print("MLflow Tracing with OpenAI Autologging")
+    print("="*60)
     
-    # Uncomment to compare multiple versions:
+    # Test with automatic tracing enabled
+    test_prompt_version_with_trace(PROMPT_VERSION)
+    # test_prompt_version(PROMPT_VERSION)
+    
+    print("\n" + "="*60)
+    print("✓ Check MLflow UI at http://localhost:5000")
+    print("  to view the traces!")
+    print("="*60)
+    
+    # Uncomment to test multiple versions:
     # for version in [1, 2]:
-    #     test_prompt_version(version)
+    #     with mlflow.start_run():
+    #         test_prompt_version_with_trace(version)
