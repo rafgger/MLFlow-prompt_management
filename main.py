@@ -1,7 +1,9 @@
-from openai import OpenAI
-import mlflow
-from dotenv import load_dotenv
 import os
+import mlflow
+from openai import OpenAI
+from mlflow.genai import scorer
+from mlflow.genai.scorers import Correctness, Guidelines
+from dotenv import load_dotenv
 import psycopg2
 from psycopg2 import sql
 

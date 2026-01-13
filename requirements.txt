@@ -2,3 +2,4 @@ mlflow>=2.8.0
 openai==2.8.0
 python-dotenv==1.2.1
 psycopg2-binary==2.9.11
+litellm==1.80.16
